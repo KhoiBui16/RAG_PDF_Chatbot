@@ -1,0 +1,33 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore environment files
+.env
+*.env
+
+# Ignore API key cache
+.api_key_cache.json
+
+# Ignore data files
+/data/*
+!data/README.md
+
+# Ignore ChromaDB persistence
+chroma_persist/
+
+# Ignore Git metadata in subfolders
+RAG_PDF_Chatbot/.git/
+
+# Ignore other temporary files
+*.tmp
+*.log
+*.bak
+*.swp
+*.DS_Store
+
+# Ignore additional unnecessary files
+[Code-Hint]-Project-RAG.ipynb
