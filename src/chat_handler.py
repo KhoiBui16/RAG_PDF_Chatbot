@@ -4,6 +4,7 @@
 import re
 import streamlit as st
 import logging
+from google.api_core.exceptions import ResourceExhausted
 from .utils import remove_repetition, truncate_context, truncate_response, logger
 from .reranker import rerank_documents, load_reranker
 
@@ -223,9 +224,19 @@ def process_question(question: str, settings: dict, use_reranker: bool = True) -
     mode = "Gemini" if st.session_state.is_gemini_mode else "Local (Qwen)"
     logger.info(f"[process_question] Generating answer using {mode} mode")
 
-    if st.session_state.is_gemini_mode:
-        answer = _generate_gemini_answer(context, question)
-    else:
+    try:
+        if st.session_state.is_gemini_mode:
+            answer = _generate_gemini_answer(context, question)
+        else:
+            answer = _generate_local_answer(context, question, settings)
+    except ResourceExhausted as e:
+        # Log the error
+        logging.error(f"Google Generative AI API quota exceeded: {e}")
+        
+        # Notify the user (optional: you can customize this for your app's UI)
+        logging.info("Falling back to local CPU-based processing.")
+
+        # Fallback to CPU-based processing
         answer = _generate_local_answer(context, question, settings)
 
     # Post-process: Remove repetitive content
